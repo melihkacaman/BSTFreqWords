@@ -1,7 +1,7 @@
 package wft;
 
 class MinHeap {
-    private Integer[] heap;
+    protected Integer[] heap;
     private int size = 0;
 
     MinHeap(int capacity) {

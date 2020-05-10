@@ -27,6 +27,8 @@ class LinkedList {
         return temp;
     }
 
+
+
     private boolean isEmpty() {
         return head == null;
     }
