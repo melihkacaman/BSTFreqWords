@@ -11,7 +11,11 @@ public class WordFrequencyTree {
 
     // TO DO: make the recursive
     public void insert(String newWord, String fileName) {
-        Node newNode = new Node(newWord);
+        String resultWord = chekcState(newWord);
+        if (resultWord == null)
+            return;
+
+        Node newNode = new Node(resultWord);
 
         if (isEmpty()) {
             newNode.info.addFirst(new NodeForLL(fileName));
@@ -20,14 +24,14 @@ public class WordFrequencyTree {
             Node temp = this.root;
 
             while (temp != null) {
-                if (newWord.compareTo(temp.data) > 0) {
+                if (resultWord.compareTo(temp.data) > 0) {
                     if (temp.rightChild == null) {
                         temp.rightChild = newNode;
                         newNode.info.addFirst(new NodeForLL(fileName));
                         return;
                     }
                     temp = temp.rightChild;
-                } else if (newWord.compareTo(temp.data) < 0) {
+                } else if (resultWord.compareTo(temp.data) < 0) {
                     if (temp.leftChild == null) {
                         temp.leftChild = newNode;
                         newNode.info.addFirst(new NodeForLL(fileName));
@@ -36,9 +40,8 @@ public class WordFrequencyTree {
                     temp = temp.leftChild;
                 } else {
                     NodeForLL newNodeForLL = temp.info.Find(fileName);
-                    System.out.print(newWord + "-->");
                     if (newNodeForLL != null) {  // it might be caused
-                        newNodeForLL.count = newNodeForLL.count + 1;
+                        newNodeForLL.freq = newNodeForLL.freq + 1;
                     } else {
                         newNodeForLL = new NodeForLL(fileName);
                         temp.info.addFirst(newNodeForLL);
@@ -50,19 +53,23 @@ public class WordFrequencyTree {
     }
 
     public void query(String query) {
-        String[] queryWords = query.toLowerCase().split(" ");
+        String[] queryWords = query.trim().toLowerCase().split(" ");
         int count = 0;
-        LinkedList resultFreq = new LinkedList();
+        MinHeap minHeap = new MinHeap(10);
 
-        for(String word : queryWords) {
+        for (String word : queryWords) {
             Node resultSearch = search(word);
 
-            NodeForLL temp = resultSearch.info.head;
-            while (temp!= null){
-                resultFreq.addFirst(temp);
-                temp = temp.nextNode;
+            if (resultSearch != null) {
+                NodeForLL temp = resultSearch.info.head;
+                while (temp != null) {
+                    minHeap.insert(temp.freq, temp.fileName);
+                    temp = temp.nextNode;
+                }
             }
         }
+
+        minHeap.print();
     }
 
     private Node search(String searchData) {
@@ -78,11 +85,34 @@ public class WordFrequencyTree {
                 } else if (searchData.compareTo(temp.data) < 0) {
                     temp = temp.leftChild;
                 } else {
-                    result = temp;
+                    return temp;
                 }
             }
         }
         return result;
+    }
+
+    private String chekcState(String word){
+        String result = word.trim().toLowerCase();
+        if (result.length() == 1 && Character.isLetter(result.toCharArray()[0])) {
+            return result;
+        }else if(result.length() > 1){
+            String res = "";
+            int i = 0;
+            for(Character c : result.toCharArray()){
+                if(i == 0 && !Character.isLetter(c)) {
+                    continue;
+                }
+                if(i == result.length() -1 && !Character.isLetter(c)){
+                    continue;
+                }
+                res = res + c;
+                i++;
+            }
+            return res;
+        }else {
+            return null;
+        }
     }
 
     private boolean isEmpty() {
