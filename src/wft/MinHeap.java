@@ -29,12 +29,13 @@ class MinHeap {
     }
 
     void print() {
-        if (this.size > 0){
-            for (int i = size-1; i>=0; i--) {
-                System.out.print(this.heap[i].fileName + "("+this.heap[i].freq + ") -->");
+        System.out.print("Result: ");
+        if (this.size > 0) {
+            for (int i = size; i >= 0; i--) {
+                deleteMin();
             }
-            System.out.println();
         }
+        System.out.println("null");
     }
 
     private boolean increaseKey(String fileName, int amount) {
@@ -65,6 +66,17 @@ class MinHeap {
         if (min != i) {
             swap(min, i);
             minHeap(min);
+        }
+    }
+
+    void deleteMin() {
+        if (size > 0) {
+            NodeForHeap deletedMin = heap[0];
+            heap[0] = heap[size - 1];
+            size--;
+
+            minHeap(0);
+            System.out.print(deletedMin.fileName + "(" + deletedMin.freq + ") -->");
         }
     }
 

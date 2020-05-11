@@ -4,11 +4,6 @@ public class WordFrequencyTree {
     private Node root;
     private int size;
 
-    public WordFrequencyTree() {
-        this.size = 0;
-        this.root = null;
-    }
-
     // TO DO: make the recursive
     public void insert(String newWord, String fileName) {
         String resultWord = chekcState(newWord);
